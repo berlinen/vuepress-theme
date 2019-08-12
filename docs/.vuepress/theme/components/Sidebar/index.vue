@@ -1,20 +1,23 @@
 <template>
   <div class="sidebar">
-    <div class="group" v-for="sidebarGroupItem, index in sidebars" v-if="sidebarGroupItem">
-      <div class="group__title">{{ sidebarGroupOrder[index] }}</div>
+    <div class="group__title">
+          <a href="/local/configurations/" style="color: #000">关于我们</a>
+    </div>
+    <div class="group" v-for="sidebarGroupItem, index in sidebarItems" v-if="sidebarGroupItem">
+      <div class="group__title">{{ sidebarGroupItem.title }}</div>
       <div class="group__body">
 
         <!-- render README.md in this folder -->
-        <div v-if="sidebarGroupItem.to" :class="[
+        <div v-if="sidebarGroupItem.path" :class="[
           'group__category',
           'category',
           {
-            'category--selected': $route.fullPath === sidebarGroupItem.to,
-            'category--active': $route.fullPath === sidebarGroupItem.to,
+            'category--selected': $route.fullPath === sidebarGroupItem.path,
+            'category--active': $route.fullPath === sidebarGroupItem.path,
           }
         ]">
           <div class="category__label">
-            <NavLink :to="sidebarGroupItem.to">{{ title(sidebarGroupItem.title || sidebarGroupOrder[index]) }}</NavLink>
+            <NavLink :to="sidebarGroupItem.path">{{ title(sidebarGroupItem.title || sidebarGroupOrder[index]) }}</NavLink>
           </div>
         </div>
 
@@ -28,30 +31,30 @@
           }
         ]">
           <div class="category__label">
-            <NavLink :to="`${sidebarGroupItem.to}#${header.slug}`">{{ title(header.title) }}</NavLink>
+            <NavLink :to="`${sidebarGroupItem.path}#${header.slug}`">{{ title(header.title) }}</NavLink>
           </div>
         </div>
 
         <!-- render other files in this folder -->
-        <div v-if="sidebarGroupItem.children && sidebarGroupItem.children.length" v-for="child in sidebarGroupItem.children" :name="`${child.to}`" :class="[
+        <div v-if="sidebarGroupItem.children && sidebarGroupItem.children.length" v-for="child in sidebarGroupItem.children" :name="`${child.path}`" :class="[
           'group__category',
           'category',
           {
-            'category--selected': !child.isLangNav && $route.path === child.to,
-            'category--active': !child.isLangNav && $route.fullPath === child.to,
+            'category--selected': !child.isLangNav && $route.path === child.path,
+            'category--active': !child.isLangNav && $route.fullPath === child.path,
           }
         ]">
           <div class="category__label">
-            <NavLink :to="child.to">{{ title(child.title) }}</NavLink>
+            <NavLink :to="child.path">{{ title(child.title) }}</NavLink>
           </div>
           <div v-if="child.headers && child.headers.length" v-for="header in child.headers" :class="[
             'category__headers',
             {
-              'category--active': $route.fullPath === `${child.to}#${header.slug}`,
+              'category--active': $route.fullPath === `${child.path}#${header.slug}`,
             }
           ]">
             <div class="category__header-item">
-              <NavLink :to="`${child.to}#${header.slug}`">{{ title(header.title) }}</NavLink>
+              <NavLink :to="`${child.path}#${header.slug}`">{{ title(header.title) }}</NavLink>
             </div>
           </div>
         </div>
@@ -64,6 +67,7 @@
 import config from '../../config'
 import { title } from '../../utils'
 import NavLink from '../NavLink'
+import { resolveSidebarItems } from './utils.js'
 
 export default {
   name: 'Sidebar',
@@ -102,6 +106,17 @@ export default {
           return this.items[item]
         })
     },
+    sidebarItems () {
+      return resolveSidebarItems(
+        this.$page,
+        this.$page.regularPath,
+        this.$site,
+        this.$localePath
+      )
+    }
+  },
+  created () {
+    console.log(this.sidebarItems)
   },
   methods: {
     title,
@@ -122,16 +137,18 @@ export default {
   background: $white
 
 .group
-  margin-bottom: 4rem
+  margin-bottom: 2rem
 
   &__title
     padding-left: 30px
     margin-bottom: 1em
-    font-size: 14px
+    font-size: 18px
     font-weight: 300
     letter-spacing: 1.3px
     text-transform: uppercase
-    color: #888
+    color: #000
+    font-weight: 800
+    max-width 16rem
 
 .category
   a,
