@@ -1,5 +1,5 @@
 module.exports = {
-  title: '主题配置',
+  title: '金融前端组博客',
   description: 'theme config',
   dest: 'dist',
   head: [
