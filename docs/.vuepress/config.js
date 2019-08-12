@@ -1,6 +1,7 @@
 module.exports = {
   title: '金融前端组博客',
   description: 'theme config',
+  base: '/vuepress-theme/',
   dest: 'dist',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
@@ -29,6 +30,8 @@ module.exports = {
     ],
     // 自动形成侧边导航
     sidebarDepth: 1,
+    // 最后更新时间
+    lastUpdated: '更新时间',
   },
   serviceWorker: false,
   markdown: {
